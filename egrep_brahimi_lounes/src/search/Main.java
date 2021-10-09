@@ -3,8 +3,10 @@ package search;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 import knuthMorrisPratt.KmpAlgorithm;
+import automaton.*;
 
 public class Main {
 
@@ -35,6 +37,16 @@ public class Main {
 		    return result;
 		}
 	}
+
+	public static void printMatrix(List<Integer>[][] ndfaMatrix) {
+		for (int i = 0; i < ndfaMatrix.length; i++) {
+		    for (int j = 65; j < ndfaMatrix[i].length; j++) {
+		    	if (((j > 64) && (j < 123)) || (j > 250))
+		        System.out.print(ndfaMatrix[i][j] + " ");
+		    }
+		    System.out.println();
+		}
+	}
 	
 	public static void main(String args[]) throws IOException{  
 		if (args.length < 2) {
@@ -51,8 +63,27 @@ public class Main {
 					kmp.generateCarryOver();
 					System.out.println(kmp.search());
 				} else {
-					System.out.println("expression reguliere complexe");
-					System.out.println(fileToText(args[1]));
+					System.out.println("=========\\nexpression reguliere complexe=========");
+					String regEx = args[0];
+					RegEx r = new RegEx(regEx);
+					try {
+						SyntaxTree ret = r.parse();
+				        System.out.println("________________________________________________");
+				        System.out.println("####Syntax Tree:####\n"+ret.toString());
+					    System.out.println("________________________________________________");
+					    NDFA n = new NDFA(100000);
+					    n.arbreToNDFA(ret);
+					    NDFARemoveEpsilon nSansEpsilons = new NDFARemoveEpsilon(n.getNdfaMatrix(), 100000, n.getnColonnes(), n.getNumeroEtat());
+					    nSansEpsilons.supression();
+					    DFA dfa = new DFA(nSansEpsilons.nouveauNdfaMatrix, 100000, n.getnColonnes());
+					    dfa.determinate();
+					    System.out.println("#### Recherche ####");
+					    SearchWithAutomaton s = new SearchWithAutomaton(dfa.dfaMatrix, 100000, n.getnColonnes()); 
+					    String text = fileToText(args[1]);
+					    System.out.println(s.search(text));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}	

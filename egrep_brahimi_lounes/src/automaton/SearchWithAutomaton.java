@@ -31,11 +31,14 @@ public class SearchWithAutomaton {
 	}
 	
 	public int executeAutomate(int etatActuel, int colonne) {
-		if (this.dfaMatrix[etatActuel][colonne] != null) {
-			return this.dfaMatrix[etatActuel][colonne].get(0);
-		} else {
-			return -404;
+		if (colonne < 260) {
+			if (this.dfaMatrix[etatActuel][colonne] != null) {
+				return this.dfaMatrix[etatActuel][colonne].get(0);
+			} else {
+				return -404;
+			}
 		}
+		return -404;
 	}
 	
 	public boolean estEtatFinal(int etat) {

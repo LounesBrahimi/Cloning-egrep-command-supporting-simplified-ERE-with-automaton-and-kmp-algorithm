@@ -13,7 +13,7 @@ public class NDFA {
 	private int indiceFinale = 258;
 	
 	public NDFA(){
-		this.nLignes = 100;
+		this.nLignes = 100000;
 		this.nColonnes = 259;
 		this.ndfaMatrix = new ArrayList[this.nLignes][this.nColonnes];
 	}
@@ -347,13 +347,11 @@ public class NDFA {
 			} else {
 				this.ndfaMatrix[etatRacine][arbre.racine].add(nvEtat);
 			}
-			System.out.println(nvEtat);
 			if (this.ndfaMatrix[nvEtat][this.indiceEpsilon] == null) {
 				ArrayList list = new ArrayList();
 				list.add(finale);
 				this.ndfaMatrix[nvEtat][this.indiceEpsilon] = list;
 			} else {
-				System.out.println(this.ndfaMatrix[nvEtat][this.indiceEpsilon]);
 				this.ndfaMatrix[nvEtat][this.indiceEpsilon].add(finale);	
 			}
 		}
