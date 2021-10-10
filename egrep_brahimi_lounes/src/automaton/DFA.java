@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/*
+ * Class permettant de généré l'automate finie deterministe
+ * */
 public class DFA {
 
 	// Nombre de lignes de la matrice
@@ -93,10 +96,6 @@ public class DFA {
 		}
 		return list;
 	}
-	
-	//public int indice_du_noeud() {
-//		return 0;
-	//}
 	
 	/*
 	 * Methode qui transforme un automate finie non deterministe sans epsilons transitions
@@ -281,7 +280,6 @@ public class DFA {
 					}
 				}
 			}
-		}
-		
+		}	
 	}
 }

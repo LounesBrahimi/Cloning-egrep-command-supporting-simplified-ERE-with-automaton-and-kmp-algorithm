@@ -2,6 +2,10 @@ package knuthMorrisPratt;
 
 import java.util.ArrayList;
 
+/*
+ * Class structurant l'algorithme KMP, elle permet de construire le Factor, le Carry Over
+ * Ainsi que d'effectuer la recherche
+ * */
 public class KmpAlgorithm {
 
 	// expression reguliere

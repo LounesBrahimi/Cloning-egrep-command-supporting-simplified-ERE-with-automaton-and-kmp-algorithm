@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/*
+ * Class permettant de supprimer les epsilons transitions de l'automate
+ * finie non deterministe
+ * */
 public class NDFARemoveEpsilon {
 
 	// Nombre de lignes de la matrice

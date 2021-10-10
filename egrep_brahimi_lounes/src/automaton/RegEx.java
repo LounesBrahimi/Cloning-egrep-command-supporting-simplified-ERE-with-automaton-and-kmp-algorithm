@@ -2,6 +2,9 @@ package automaton;
 
 import java.util.ArrayList;
 
+/*
+ * Class representant l'expression reguliere et permettant de creer l'arbre syntaxique
+ * */
 public class RegEx {
 	
 	//Macros

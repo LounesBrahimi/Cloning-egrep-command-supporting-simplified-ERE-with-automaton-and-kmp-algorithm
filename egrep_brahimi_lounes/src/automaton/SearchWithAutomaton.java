@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/*
+ * Class permettant d'effectuer la recherche sur à l'aide d'un automate
+ * finie deterministe
+ * */
 public class SearchWithAutomaton {
 
 	// Nombre de lignes de la matrice

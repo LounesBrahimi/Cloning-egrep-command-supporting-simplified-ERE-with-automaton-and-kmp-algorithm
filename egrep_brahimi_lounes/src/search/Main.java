@@ -9,6 +9,9 @@ import java.util.List;
 import knuthMorrisPratt.KmpAlgorithm;
 import automaton.*;
 
+/*
+ * Class permettant d'executer le projet de la meme forme qu'une commande egrep
+ * */
 public class Main {
 
 	/*

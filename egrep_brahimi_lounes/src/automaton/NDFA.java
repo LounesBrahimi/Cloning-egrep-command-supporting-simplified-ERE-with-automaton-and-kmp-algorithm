@@ -3,6 +3,9 @@ package automaton;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Class permettant de généré un automate finie non deterministe avec epsilons transitions
+ * */
 public class NDFA {
 
 	// Nombre de lignes de la matrice

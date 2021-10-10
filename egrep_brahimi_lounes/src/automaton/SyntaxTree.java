@@ -2,6 +2,9 @@ package automaton;
 
 import java.util.ArrayList;
 
+/*
+ * Class structuant l'arbre syntaxique
+ * */
 public class SyntaxTree {
 
 	protected int racine;
