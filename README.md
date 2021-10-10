@@ -1,4 +1,4 @@
-Pour éxécuté utiliser le projet, il suffit de rentrer dans le dossier "egrep_brahimi_lounes" puis de :
+Pour exécuter le projet, il suffit de rentrer dans le dossier "egrep_brahimi_lounes" puis de :
 
 1. ant build	====> Compile le projet.
 
