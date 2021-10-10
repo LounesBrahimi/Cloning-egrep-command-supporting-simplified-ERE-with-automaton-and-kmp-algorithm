@@ -54,7 +54,7 @@ public class TestMain {
 	 * */
 	public static boolean estSuiteConcatenations(String regEx) {
 		for (int i = 0; i < regEx.length(); i++) {
-			if ((regEx.charAt(i) == '*') || (regEx.charAt(i) == '|') ) {
+			if ((regEx.charAt(i) == '*') || (regEx.charAt(i) == '|') || (regEx.charAt(i) == '.') ) {
 				return false;
 			}
 		}
@@ -83,8 +83,9 @@ public class TestMain {
 			try {
 				String text = fileToText(args[0]);
 				String[] lignes = textToLines(text);
+				long startTime = System.nanoTime();
 				for (String ligne : lignes) {
-					String[] elementsLigne = ligne.split(" ", 2);
+					String[] elementsLigne = ligne.split("	", 2);
 					if ((int) elementsLigne[1].charAt(elementsLigne[1].length()-1) == 13) {
 						elementsLigne[1] = elementsLigne[1].substring(0, elementsLigne[1].length()-1);
 					}
@@ -122,12 +123,19 @@ public class TestMain {
 							    SearchWithAutomaton s = new SearchWithAutomaton(dfa.dfaMatrix, 100000, n.getnColonnes()); 
 							    String text1 = fileToText(elementsLigne[1]);
 							    printLignes(s.search(text1));
+							    nSansEpsilons.numeroEtat = 0;
+							    n.numeroEtat = 0;
+							    dfa.ligne_non_utilisee = 0;
+							    
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}
 					}
 				}
+				long endTime = System.nanoTime();
+				long duration = ((endTime - startTime)/1000000);
+				System.out.println("## Time execution in seconds : "+ duration/100);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

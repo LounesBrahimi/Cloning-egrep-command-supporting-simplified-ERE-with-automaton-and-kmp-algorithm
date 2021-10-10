@@ -28,7 +28,7 @@ public class NDFARemoveEpsilon {
 	/*
 	 * indique à temps reel le numero d'un etat non existant et qu'on peut donc creer
 	 * */
-	static int numeroEtat = 0;
+	public static int numeroEtat = 0;
 	
 	/*
 	 * Constructeur

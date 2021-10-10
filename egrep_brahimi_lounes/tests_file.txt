@@ -1,2 +1,14 @@
-S(a|r|g)*on 56667-0.txt
-Sargon 56667-0.txt
+Sargon	56667-0.txt
+S(a|r|g)*on	56667-0.txt
+eBook	56667-0.txt
+eB(oo)*k	56667-0.txt
+Babylon	56667-0.txt
+B(a|z)(by)*(l)*on	56667-0.txt
+Hammurabi	56667-0.txt
+loup|poul	56667-0.txt
+A(m|m).(m|m)i.(-|+).za.d(uga)*	56667-0.txt
+Le livre est donc une revue de toutes les sciences	Flaubert.txt
+Q.u.a.n.d. .B.o.u.v.a.r.d. .e.t	Flaubert.txt
+(la N)(ature)_*( )*le.( non inclu)*.ur	Flaubert.txt
+Produced by	The Boy And the Baron.txt
+favored (him|his)	The Boy And the Baron.txt

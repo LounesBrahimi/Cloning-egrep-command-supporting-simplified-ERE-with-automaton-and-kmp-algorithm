@@ -29,7 +29,7 @@ public class DFA {
 	private int indiceFinale = 258;
 	
 	// Donne en temps réel un numéro de ligne non utilisé
-	static int ligne_non_utilisee = 0;
+	public static int ligne_non_utilisee = 0;
 	
 	/*
 	 * Constructeur

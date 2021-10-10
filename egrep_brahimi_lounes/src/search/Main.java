@@ -19,7 +19,7 @@ public class Main {
 	 * */
 	public static boolean estSuiteConcatenations(String regEx) {
 		for (int i = 0; i < regEx.length(); i++) {
-			if ((regEx.charAt(i) == '*') || (regEx.charAt(i) == '|') ) {
+			if ((regEx.charAt(i) == '*') || (regEx.charAt(i) == '|') || (regEx.charAt(i) == '.')) {
 				return false;
 			}
 		}

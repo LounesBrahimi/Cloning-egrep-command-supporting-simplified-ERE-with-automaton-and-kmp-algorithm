@@ -44,7 +44,7 @@ public class NDFA {
 	/*
 	 * indique à temps reel le numero d'un etat non existant et qu'on peut donc creer
 	 * */
-	static int numeroEtat = 0;
+	public static int numeroEtat = 0;
 	
 	/*
 	 * Constitue l'état initiale de l'automate selon l'arbre syntaxique, puis construit
