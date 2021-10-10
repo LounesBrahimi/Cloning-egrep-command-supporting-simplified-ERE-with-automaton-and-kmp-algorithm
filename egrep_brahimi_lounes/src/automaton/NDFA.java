@@ -5,19 +5,32 @@ import java.util.List;
 
 public class NDFA {
 
+	// Nombre de lignes de la matrice
 	private int nLignes;
+	// Nombre de colonnes de la matrice
 	private int nColonnes;
+	// La matrice representant l'automate finie non deterministe
 	public List<Integer>[][] ndfaMatrix;
+	// la colonne 256 indique si l'etat a des epslions transitions
 	private int indiceEpsilon = 256;
+	// la colonne 257 indique si l'etat est un etat initiale
 	private int indiceInitiale = 257;
+	// la colonne 257 indique si l'etat est un etat finale
 	private int indiceFinale = 258;
 	
+	/*
+	 * Constructeur sans arguments
+	 * */
 	public NDFA(){
 		this.nLignes = 100000;
 		this.nColonnes = 259;
 		this.ndfaMatrix = new ArrayList[this.nLignes][this.nColonnes];
 	}
 	
+	/*
+	 * Constructeur 
+	 * parametré par le nomrbe de lignes
+	 * */
 	public NDFA(int nLignes){
 		this.nLignes = nLignes;
 		this.nColonnes = 259;
@@ -25,14 +38,25 @@ public class NDFA {
 		this.ndfaMatrix = arrayLists;
 	}
 	
+	/*
+	 * indique à temps reel le numero d'un etat non existant et qu'on peut donc creer
+	 * */
 	static int numeroEtat = 0;
 	
+	/*
+	 * Constitue l'état initiale de l'automate selon l'arbre syntaxique, puis construit
+	 * l'integralité de la matrice representant l'automate finie non deterministe avec 
+	 * des epsilons transitions, la méthode peut notament appeler la méthode récursive "arbreToNDFARec"
+	 * qui parcours tout l'arbre.
+	 * */
 	public void arbreToNDFA(SyntaxTree arbre){
 		int initiale = 0;
 		int finale = 1;
 		int nvEtat = finale + 1;
 		numeroEtat = nvEtat;
 		//Initialisation
+		// Creation de l'etat initiale 0
+		// Creation de l'etat finale 1
 		if( this.ndfaMatrix[initiale][this.indiceInitiale] == null ) {
 			ArrayList list = new ArrayList();
 			list.add(1);
@@ -48,8 +72,9 @@ public class NDFA {
 		else {
 			this.ndfaMatrix[finale][this.indiceFinale].add(1);
 		}
-		//---------------------
-		// Dans le cas ou l'arbre est une feuille exemple (a) ou (b)
+		//------------------------------------------------------------------
+		
+		// Dans le cas ou l'arbre est seulement une feuille, exemple (a) ou (b)
 		if ((arbre.sousArbre.size() == 0) && (arbre.racine != RegEx.CONCAT)
 				&& (arbre.racine != RegEx.ETOILE) && (arbre.racine != RegEx.ALTERN)
 				&& (arbre.racine != RegEx.DOT)) {
@@ -68,8 +93,9 @@ public class NDFA {
 				this.ndfaMatrix[nvEtat][this.indiceEpsilon].add(finale);	
 			}
 		}
-		//---------------
-		// Dans le cas Alternation ==> exemple ( a | b ) 
+		//----------------------------------------------------------------------
+		
+		// Dans le cas d'une Alternation, exemple ( a | b ) 
 		if ((arbre.sousArbre.size() > 1) && (arbre.racine == RegEx.ALTERN)) {
 			int nvEtat2 = numeroEtat + 1;
 			numeroEtat = nvEtat2;
@@ -85,12 +111,14 @@ public class NDFA {
 			arbreToNDFARec(arbre.sousArbre.get(0), nvEtat, initiale, finale);
 			arbreToNDFARec(arbre.sousArbre.get(1), nvEtat2, initiale, finale);
 		}
-		//----------------------------------------------------------------
-		// Dans le cas concatenation exemple : (a.b)
+		//-------------------Fin Cas d'une alternation--------------------------
+		
+		// Dans le cas d'une concatenation, exemple : (a.b)
 		if ((arbre.sousArbre.size() == 2) && ((arbre.racine == RegEx.CONCAT)
 				|| (arbre.racine == RegEx.DOT))) {
+	
 			if (arbre.sousArbre.get(0).sousArbre.size() == 0) {
-				// ----------- gauche
+				// Si le fils gauche est une simple feuille
 				if(this.ndfaMatrix[initiale][arbre.sousArbre.get(0).racine] == null) {
 					ArrayList list = new ArrayList();
 					list.add(nvEtat);
@@ -113,9 +141,9 @@ public class NDFA {
 					this.ndfaMatrix[ancEtat][indiceEpsilon].add(nvEtat);
 				}
 			} else {
+				// le cas ou le fils gauche n'est pas n'est pas une simple feuille :
 				
-				// le cas ou c'est pas une feuille gauche
-				//-------- alternation -------
+				// 1) Si le fils gauche de la concaténation est une alternation :
 				if ((arbre.sousArbre.get(0).sousArbre.size() > 1) && (arbre.sousArbre.get(0).racine == RegEx.ALTERN)) {
 					if(this.ndfaMatrix[initiale][indiceEpsilon] == null) {
 						ArrayList list = new ArrayList();
@@ -133,8 +161,7 @@ public class NDFA {
 						nvEtat = etatAvConct;
 					}
 				} else {
-					//-------- traiter les autres cas gauche!!!!!-------
-					// concat
+					// 2) Si le fils gauche de la concaténation est une concaténation : 
 					if ((arbre.sousArbre.get(0).sousArbre.size() > 1) && ((arbre.sousArbre.get(0).racine == RegEx.CONCAT)
 							|| (arbre.sousArbre.get(0).racine == RegEx.DOT))) {
 						if(this.ndfaMatrix[initiale][indiceEpsilon] == null) {
@@ -153,7 +180,7 @@ public class NDFA {
 							nvEtat = etatAvConct;
 						}
 					} else if ((arbre.sousArbre.get(0).sousArbre.size() == 1) && (arbre.sousArbre.get(0).racine == RegEx.ETOILE)){
-						// etoile----------------------------------
+						// 3) Si le fils gauche de la concaténation est une étoile
 						if(this.ndfaMatrix[initiale][indiceEpsilon] == null) {
 							ArrayList list = new ArrayList();
 							list.add(nvEtat);
@@ -169,12 +196,13 @@ public class NDFA {
 							arbreToNDFARec(arbre.sousArbre.get(0), nvEtat, initiale, etatAvConct);
 							nvEtat = etatAvConct;
 						}
-						//--------------------
 					}
 				}
 			}
+			//---------------Fin Cas Fils gauche d'une concaténation----------
+			//----------------------------------------------------------------
 			
-			//-------------- droite 
+			// Si le fils droit est une simple feuille
 			if (arbre.sousArbre.get(1).sousArbre.size() == 0) {
 				int ancEtat = nvEtat;
 				nvEtat = numeroEtat + 1;
@@ -201,14 +229,13 @@ public class NDFA {
 					}
 				}
 			} else {
-				// le cas ou c'est pas une feuille
-				//-------- alternation -------
-						arbreToNDFARec(arbre.sousArbre.get(1), nvEtat, initiale, finale);
-				
+				// Si le fils droit n'est pas une simple feuille
+						arbreToNDFARec(arbre.sousArbre.get(1), nvEtat, initiale, finale);		
 			}	
 		}
-		//---------------------------------------
-		// dans le cas d'une boucle exemple : (*a)
+		//------------------------- Fin Cas concaténation --------------------
+		
+		// dans le cas d'une boucle exemple : (a*)
 		if ((arbre.sousArbre.size() == 1) && (arbre.racine == RegEx.ETOILE)) {
 			// si le sous arbre est une feuille simple exemple a : 
 			if (arbre.sousArbre.get(0).sousArbre.size() == 0) {
@@ -274,7 +301,7 @@ public class NDFA {
 					}
 				}	
 			} else {
-				// si le sous arbre n'est pas une feuille exemple (a|b)* :
+				// si le sous arbre n'est pas une simple feuille exemple (a|b)* :
 				int nvEtat2 = numeroEtat + 1;
 				numeroEtat = nvEtat2;
 				if (this.ndfaMatrix[initiale][this.indiceEpsilon] == null) {
@@ -329,14 +356,19 @@ public class NDFA {
 					}
 				}
 			}
+			//-------------------- Fin du cas d'une étoile-----------
 		}
-		
 	}
 	
+	/*
+	 * Méthode qui transforme récursivement un arbre en un automate, elle est considéré
+	 * comme un complément de la méthode "arbreToNDFA" 
+	 * */
 	public void arbreToNDFARec(SyntaxTree arbre, int etatRacine ,int initiale, int finale) {
 		int nvEtat = numeroEtat + 1;
 		numeroEtat = nvEtat;
-		// Dans le cas ou l'arbre est une feuille exemple (a) ou (b)
+		
+		// Dans le cas ou l'arbre est une feuille simple exemple (a) ou (b)
 		if ((arbre.sousArbre.size() == 0) && (arbre.racine != RegEx.CONCAT)
 			&& (arbre.racine != RegEx.ETOILE) && (arbre.racine != RegEx.ALTERN)
 			&& (arbre.racine != RegEx.DOT)) {
@@ -355,8 +387,9 @@ public class NDFA {
 				this.ndfaMatrix[nvEtat][this.indiceEpsilon].add(finale);	
 			}
 		}
-		//---------------
-		// Dans le cas Alternation ==> exemple ( a | b ) 
+		//----------------------- Fin cas simple --------------------
+		
+		// Dans le cas d'une Alternation, exemple ( a | b ) 
 		if ((arbre.sousArbre.size() > 1) && (arbre.racine == RegEx.ALTERN)) {
 			int nvEtat2 = numeroEtat + 1;
 			numeroEtat = nvEtat2;
@@ -372,12 +405,13 @@ public class NDFA {
 			arbreToNDFARec(arbre.sousArbre.get(0), nvEtat, initiale, finale);
 			arbreToNDFARec(arbre.sousArbre.get(1), nvEtat2, initiale, finale);
 		}
-		//---------------
-		// Dans le cas concatenation ==> exemple ( b.c ) 
+		//-------------------Fin Cas d'une alternation--------------------------
+		
+		// Dans le cas d'une concatenation, exemple : (a.b)
 		if ((arbre.sousArbre.size() == 2) && ((arbre.racine == RegEx.CONCAT)
 				|| (arbre.racine == RegEx.DOT))) {
 			if (arbre.sousArbre.get(0).sousArbre.size() == 0) {
-				// ----------- gauche
+				// Si le fils gauche est une simple feuille
 				if(this.ndfaMatrix[etatRacine][arbre.sousArbre.get(0).racine] == null) {
 					ArrayList list = new ArrayList();
 					list.add(nvEtat);
@@ -400,8 +434,9 @@ public class NDFA {
 					this.ndfaMatrix[ancEtat][indiceEpsilon].add(nvEtat);
 				}
 			} else {
-				// le cas ou c'est pas une feuille gauche
-				//-------- alternation -------
+				// Si le fils gauche n'est pas une simple feuille : 
+				
+				// 1) Si le fils gauche de la concaténation est une alternation :
 				if ((arbre.sousArbre.get(0).sousArbre.size() > 1) && (arbre.sousArbre.get(0).racine == RegEx.ALTERN)) {
 					if(this.ndfaMatrix[etatRacine][indiceEpsilon] == null) {
 						ArrayList list = new ArrayList();
@@ -419,7 +454,7 @@ public class NDFA {
 						nvEtat = etatAvConct;
 					}
 				} else {
-					//-------- traiter les autres cas gauche!!!!!-------
+					// 2) Si le fils gauche de la concaténation est une concaténation :
 					if ((arbre.sousArbre.get(0).sousArbre.size() > 1) && ((arbre.sousArbre.get(0).racine == RegEx.CONCAT)
 							|| (arbre.sousArbre.get(0).racine == RegEx.DOT))) {
 						if(this.ndfaMatrix[etatRacine][indiceEpsilon] == null) {
@@ -439,7 +474,7 @@ public class NDFA {
 						}
 					}
 					else {
-					// etoile----------------------------------
+					// 3) Si le fils gauche de la concaténation est une étoile :
 					if(this.ndfaMatrix[etatRacine][indiceEpsilon] == null) {
 						ArrayList list = new ArrayList();
 						list.add(nvEtat);
@@ -456,11 +491,12 @@ public class NDFA {
 						nvEtat = etatAvConct;
 					}
 					}
-					//--------------------
+					//---------------Fin Cas Fils gauche d'une concaténation----------
+					//----------------------------------------------------------------
 				}
 			}
 			
-			//-------------- droite ---------------------------------
+			// Si le fils droit est une simple feuille
 			if (arbre.sousArbre.get(1).sousArbre.size() == 0) {
 				int ancEtat = nvEtat;
 				nvEtat = numeroEtat + 1;
@@ -487,17 +523,16 @@ public class NDFA {
 					}
 				}
 			} else {
-				// le cas ou c'est pas une feuille
-				//-------- alternation -------
+				// Si le fils droit n'est pas une simple feuille
 						arbreToNDFARec(arbre.sousArbre.get(1), nvEtat, initiale, finale);
-				
 			}
 		}
+		//---------------Fin Cas Fils gauche d'une concaténation----------
+		//----------------------------------------------------------------
 		
-		//---------------------------------------
-		// dans le cas d'une boucle exemple : (*a)
+		// dans le cas d'une boucle exemple : (a*)
 		if ((arbre.sousArbre.size() == 1) && (arbre.racine == RegEx.ETOILE)) {
-			// si le sous arbre est une feuille simple exemple a : 
+			// si le sous arbre est une simple feuille, exemple a : 
 			if (arbre.sousArbre.get(0).sousArbre.size() == 0) {
 				int nvEtat2 = numeroEtat + 1;
 				numeroEtat = nvEtat2;
@@ -561,7 +596,7 @@ public class NDFA {
 					}
 				}	
 			} else {
-				// si le sous arbre n'est pas une feuille exemple (a|b)* :
+				// si le sous arbre n'est pas une simple feuille, exemple (a|b)* :
 				int nvEtat2 = numeroEtat + 1;
 				numeroEtat = nvEtat2;
 				if (this.ndfaMatrix[etatRacine][this.indiceEpsilon] == null) {
@@ -616,28 +651,36 @@ public class NDFA {
 					}
 				}
 			}
+			//--------- Fin Cas d'une boucle ----------------------------
+			//-----------------------------------------------------------
 		}
 	}
 
 	
+	/*
+	 * Retourne le nombre de lignes
+	 * */ 
 	public int getnLignes() {
 		return nLignes;
 	}
 
-	
-
+	/*
+	 * Retourne le nombre de colonnes
+	 * */
 	public int getnColonnes() {
 		return nColonnes;
 	}
 
-
-
+	/*
+	 * Retourne la matrice representant l'automate finie non deterministe
+	 * */
 	public List<Integer>[][] getNdfaMatrix() {
 		return ndfaMatrix;
 	}
 
-
-
+	/*
+	 * Retourne le numero d'un etat pas encore creer
+	 * */
 	public static int getNumeroEtat() {
 		return numeroEtat;
 	}

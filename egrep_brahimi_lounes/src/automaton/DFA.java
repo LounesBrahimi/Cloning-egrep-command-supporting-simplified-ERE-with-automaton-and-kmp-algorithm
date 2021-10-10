@@ -2,23 +2,37 @@ package automaton;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 public class DFA {
 
+	// Nombre de lignes de la matrice
 	private int nLignes;
+	// Nombre de colonnes de la matrice
 	private int nColonnes;
+	// La matrice representant l'automate sans epsilons transitions
 	public List<Integer>[][] ndfaMatrix;
+	// La matrice representant l'automate deterministe
 	public List<Integer>[][] dfaMatrix;
+	// chaine de caractere representant le nom d'un etat à un indice i
 	public String[] string_id;
+	// un id representant l'etat à l'indice i
 	public HashSet[] list_id;
+	// la colonne 256 indique si l'etat a des epslions transitions
 	private int indiceEpsilon = 256;
+	// la colonne 257 indique si l'etat est un etat initiale
 	private int indiceInitiale = 257;
+	// la colonne 257 indique si l'etat est un etat finale
 	private int indiceFinale = 258;
 	
+	// Donne en temps réel un numéro de ligne non utilisé
 	static int ligne_non_utilisee = 0;
 	
+	/*
+	 * Constructeur
+	 * Prend en parametre l'automate finie non deterministe sans epsilons transitions
+	 * un nombre de lignes et un nombre de colonnes
+	 * */
 	public DFA(List<Integer>[][] ndfaMatrix, int nLignes, int nColonnes){
 		this.nLignes = nLignes;
 		this.nColonnes = nColonnes;
@@ -29,6 +43,9 @@ public class DFA {
 		this.list_id = new HashSet[this.nLignes];
 	}
 	
+	/*
+	 * Retourne vraie, si la chaine de caractere fait deja reference à un état
+	 * */
 	public boolean verify_existance(String s) {
 		for (int i = 0; i < this.ligne_non_utilisee; i++) {
 			if (this.string_id[i].equals(s)) {
@@ -38,6 +55,10 @@ public class DFA {
 		return false;
 	}
 	
+	
+	/*
+	 * Identifie l'indice de la ligne à laquelle le nom d'état fait signe
+	 * */
 	public int identify_line(String nameLine) {
 		for (int i = 0; i < this.ligne_non_utilisee; i++) {
 			if (this.string_id[i].equals(nameLine)) {
@@ -47,6 +68,10 @@ public class DFA {
 		return -1;
 	}
 	
+	/*
+	 * Methode qui prend en parametre le nom symbolisant un etat et retourne la liste
+	 * des noms d'etats qu'il regroupait de base
+	 * */
 	public List<String> split_string_by_size(int size, String text) {
 		List<String> strings = new ArrayList<String>();
 		int index = 0;
@@ -57,6 +82,10 @@ public class DFA {
 		return strings;
 	}
 	
+	/*
+	 * Methode qui prend en parametre une liste de noms d'etats et retourne leurs indice
+	 * de ligne dans l'ancien automate (matrice) 
+	 * */
 	public ArrayList groupe_etats(List<String> nameLine){
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < nameLine.size(); i++) {
@@ -65,12 +94,16 @@ public class DFA {
 		return list;
 	}
 	
-	public int indice_du_noeud() {
-		return 0;
-	}
+	//public int indice_du_noeud() {
+//		return 0;
+	//}
 	
+	/*
+	 * Methode qui transforme un automate finie non deterministe sans epsilons transitions
+	 * en un automate finie deterministe
+	 * */
 	public void determinate() {
-		// etats finaux
+		// Detection des etats finaux
 		ArrayList finals_etats = new ArrayList();
 		for (int i = 0; i < this.nLignes; i++) {
 			if (this.ndfaMatrix[i][this.indiceFinale] != null) {
@@ -84,7 +117,7 @@ public class DFA {
 			this.dfaMatrix[0][this.indiceFinale] = list;
 		}
 		
-		// initialise ligne 0
+		// initialisation
 		int initiale = 0;
 		this.dfaMatrix[initiale][this.indiceInitiale] = this.ndfaMatrix[initiale][this.indiceInitiale];
 		this.string_id[initiale] = "0";
@@ -96,9 +129,11 @@ public class DFA {
 		} 
 		this.list_id[initiale] = init_set;
 		
+		// traitemant de l'état initiale 0
 		for (int c = 0; c < this.nColonnes; c++) {
 			if((this.ndfaMatrix[initiale][c] != null) && ( c!= this.indiceFinale)){
 				if (this.ndfaMatrix[initiale][c].size() > 1) {
+					// Si l'état initiale pointe plusieurs noeuds dans cette colonne
 					HashSet set_etats = new HashSet();
 					String name_ligne = "0";
 					for (int i = 0; i < this.ndfaMatrix[initiale][c].size(); i++) {
@@ -106,10 +141,13 @@ public class DFA {
 					}
 					Object[] array_list = set_etats.toArray(new Object[set_etats.size()]);
 					String s = "";
+					// Creation du nom combine faisant reference aux etats pointés 
 					for (int i = 0; i < array_list.length; i++) {
 						s = s.concat(String.valueOf(array_list[i]));
 						name_ligne = s;
 					}
+					// Verifie si le noeud existe deja, sinon il le cree avant de le pointé
+					// dans le nouvel automate
 					if (!(verify_existance(name_ligne))) {
 						this.list_id[ligne_non_utilisee] = set_etats;
 						this.string_id[ligne_non_utilisee] = name_ligne;
@@ -134,6 +172,7 @@ public class DFA {
 						}
 					}
 				} else if ((c != this.indiceInitiale) && (c != this.indiceFinale)){
+					// Si l'état initiale pointe un seul noeud dans cette colonne
 					String name_ligne = String.valueOf(this.ndfaMatrix[initiale][c].get(0));
 					if (!(verify_existance(name_ligne))) {
 						HashSet set_etat = new HashSet();

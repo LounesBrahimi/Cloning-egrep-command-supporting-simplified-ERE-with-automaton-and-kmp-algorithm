@@ -67,6 +67,9 @@ public class RegEx {
 		return removeProtection(result.get(0));
 	}
 	
+	/*
+	 * Verifie si la liste d'arbres syntaxiques contient des parentheses
+	 * */
 	private static boolean containParenthese(ArrayList<SyntaxTree> trees) {
 		for (SyntaxTree t: trees) {
 			if (t.racine == PARENTHESEFERMANT || t.racine == PARENTHESEOUVRANT) 
@@ -75,6 +78,11 @@ public class RegEx {
 		return false;
 	}
 	
+	/*
+	 * Cherche et detecte les arbres positionner entre les deux arbres avec une racine respectivement
+	 * (PARENTHESEOUVRANT et PARENTHESEFERMANT), l'algorithme supprime ces deux derniers arbres 
+	 * et traite la traite la suite d'arbres qu'ils délimitaient, 
+	 * */
 	private static ArrayList<SyntaxTree> processParenthese(ArrayList<SyntaxTree> trees) throws Exception {
 		ArrayList<SyntaxTree> result = new ArrayList<SyntaxTree>();
 		boolean found = false;
@@ -102,6 +110,9 @@ public class RegEx {
 	    return result;
 	}
 	
+	/*
+	 * Verifie si la liste d'arbres syntaxiques contient l'etoiles
+	 * */
 	private static boolean containEtoile(ArrayList<SyntaxTree> trees) {
 		for (SyntaxTree t: trees) {
 			if (t.racine == ETOILE && t.sousArbre.isEmpty()) {
@@ -111,6 +122,10 @@ public class RegEx {
 		return false;
 	}
 	
+	/*
+	 * Cherche et detecte la liste des arbres positionnés avant l'arbre dont la racine est étoile
+	 * cette liste d'arbre deviennent le sous arbres de l'étoile 
+	 * */
 	private static ArrayList<SyntaxTree> processEtoile(ArrayList<SyntaxTree> trees) throws Exception {
 		ArrayList<SyntaxTree> result = new ArrayList<SyntaxTree>();
 		boolean found = false;
@@ -128,7 +143,10 @@ public class RegEx {
 		}
 		return result;
 	}
-	
+
+	/*
+	 * Verifie si la liste d'arbres syntaxiques contiennent la concaténation
+	 * */
 	private static boolean containConcat(ArrayList<SyntaxTree> trees) {
 		boolean firstFound = false;
 	    for (SyntaxTree t: trees) {
@@ -146,6 +164,11 @@ public class RegEx {
 	    return false;
 	}
 	
+	/*
+	 * Dans le cas de deux arbres qui ce suivent sans altérnation, la méthode prend 
+	 * le premier noeud, puis le deuxieme, et ces deux arbres deviennent les fils d'un nouveau
+	 * noeud représentant la concaténation
+	 * */
 	private static ArrayList<SyntaxTree> processConcat(ArrayList<SyntaxTree> trees) throws Exception {
 		ArrayList<SyntaxTree> result = new ArrayList<SyntaxTree>();
 		boolean found = false;
@@ -175,6 +198,9 @@ public class RegEx {
 	    return result;
 	  }
 	
+	/*
+	 * Verifie si la liste d'arbres syntaxiques contiennent une alternation
+	 * */
 	private static boolean containAltern(ArrayList<SyntaxTree> trees) {
 	    for (SyntaxTree t: trees) {
 	    	if (t.racine == ALTERN && t.sousArbre.isEmpty()) {
@@ -184,6 +210,10 @@ public class RegEx {
 	    return false;
 	}
 	
+	/*
+	 * détecte la gauche de l'arbre a la racine altern, ce dernier deviens son fils gauche,
+	 * la méthode et continue et détecte sa droite et deviens ainsi son fils gauche
+	 * */
 	private static ArrayList<SyntaxTree> processAltern(ArrayList<SyntaxTree> trees) throws Exception {
 		ArrayList<SyntaxTree> result = new ArrayList<SyntaxTree>();
 	    boolean found = false;
@@ -214,6 +244,9 @@ public class RegEx {
 		return result;
 	}
 
+	/*
+	 * Supprime l'arbre protection mis pendant le traitement des parentheses
+	 * */
 	private static SyntaxTree removeProtection(SyntaxTree tree) throws Exception {
 		if (tree.racine == PROTECTION && tree.sousArbre.size() != 1) {
 	    	throw new Exception();
