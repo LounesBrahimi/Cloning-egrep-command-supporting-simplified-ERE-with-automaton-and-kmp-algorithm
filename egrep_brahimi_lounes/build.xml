@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="egrep_brahimi_lounes">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="15"/>
+    <property name="source" value="15"/>
+    <path id="egrep_brahimi_lounes.classpath">
+        <pathelement location="bin"/>
+    </path>
+    <path id="run.main.classpath">
+        <path refid="egrep_brahimi_lounes.classpath"/>
+    </path>
+    <path id="run.TestMain.classpath">
+        <path refid="egrep_brahimi_lounes.classpath"/>
+    </path>
+    <path id="run.Main.classpath">
+        <path refid="egrep_brahimi_lounes.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="egrep_brahimi_lounes.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="main">
+        <java classname="search.Main" failonerror="true" fork="yes">
+            <arg line="&quot;Sargon&quot; &quot;56667-0.txt&quot;"/>
+            <classpath refid="run.main.classpath"/>
+        	<arg value="${arg0}"/>
+        	<arg value="${arg1}"/>
+        </java>
+    </target>
+    <target name="TestMain">
+        <java classname="testbeds.TestMain" failonerror="true" fork="yes">
+            <classpath refid="run.TestMain.classpath"/>
+            <arg value="${arg0}"/>
+        </java>
+    </target>
+    <target name="Main">
+        <java classname="search.Main" failonerror="true" fork="yes">
+            <classpath refid="run.Main.classpath"/>
+        	<arg value="${arg0}"/>
+        	<arg value="${arg1}"/>
+        </java>
+    </target>
+</project>
